@@ -1,0 +1,16 @@
+{
+  "name": "minesweeper/minesweeper",
+  "require": {
+    "phpunit/phpunit": "^8.2"
+  },
+  "authors": [
+    {
+      "name": "Casey"
+    }
+  ],
+  "autoload" : {
+    "psr-4": {
+      "App\\" : "src/"
+    }
+  }
+}
