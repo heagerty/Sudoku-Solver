@@ -4,7 +4,7 @@
 namespace App;
 
 
-use foo\bar;
+//use foo\bar;
 
 /**
  * Class SudokuChecker
