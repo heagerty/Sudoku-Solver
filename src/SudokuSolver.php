@@ -51,7 +51,7 @@ class SudokuSolver
             if ($y < 3) {
                 $boxnumber = 1;
             } elseif ($y > 5) {
-                $boxnumber = 8;
+                $boxnumber = 7;
             } else {
                 $boxnumber = 4;
             }
@@ -126,7 +126,7 @@ class SudokuSolver
 
 
         while (in_array(0, $flatRows)) {
-            //echo "\n".'FLAT ROWS: '.implode("|",$flatRows)."\n";
+            echo "\n".'FLAT ROWS: '.implode("|",$flatRows)."\n";
             for ($i = 0; $i < 9; $i++) {
                 for ($j = 0; $j < 9; $j++) {
                     if ($coordinates[$i][$j] == 0) {
@@ -136,46 +136,46 @@ class SudokuSolver
 
 //                                    $otherNumbers[] = $rows[$i];
 //                                    $otherNumbers[] = $columns[$j];
-//                                    if ($j < 3) {               //1st column
-//                                        if ($i < 3) {
-//                                            $boxnumber = 0;
-//                                        }
-//                                        elseif ($i > 5) {
-//                                            $boxnumber = 6;
-//                                        }
-//                                        else {
-//                                            $boxnumber = 3;
-//                                        }
-//                                    } elseif ($j > 5) {           //3rd column
-//                                        if ($i < 3) {
-//                                            $boxnumber = 2;
-//                                        }
-//                                        elseif ($i > 5) {
-//                                            $boxnumber = 8;
-//                                        }
-//                                        else {
-//                                            $boxnumber = 5;
-//                                        }
-//                                    } else {                       //2nd column
-//                                        if ($i < 3) {
-//                                            $boxnumber = 1;
-//                                        } elseif ($i > 7) {
-//                                            $boxnumber = 8;
-//                                        } else {
-//                                            $boxnumber = 4;
-//                                        }
-//                                    }
+                                    if ($j < 3) {               //1st column
+                                        if ($i < 3) {
+                                            $boxnumber = 0;
+                                        }
+                                        elseif ($i > 5) {
+                                            $boxnumber = 6;
+                                        }
+                                        else {
+                                            $boxnumber = 3;
+                                        }
+                                    } elseif ($j > 5) {           //3rd column
+                                        if ($i < 3) {
+                                            $boxnumber = 2;
+                                        }
+                                        elseif ($i > 5) {
+                                            $boxnumber = 8;
+                                        }
+                                        else {
+                                            $boxnumber = 5;
+                                        }
+                                    } else {                       //2nd column
+                                        if ($i < 3) {
+                                            $boxnumber = 1;
+                                        } elseif ($i > 5) {
+                                            $boxnumber = 7;
+                                        } else {
+                                            $boxnumber = 4;
+                                        }
+                                    }
 //
 //
 //
-//                                    echo "\n"."\n"."\n".'Big box number: '. $boxnumber."\n";
-//
-//                                    $thisBox = $boxes[$boxnumber];
-//                                    $otherNumbers[] = $thisBox;
+                                    echo "\n"."\n"."\n".'Big box number: '. $boxnumber."\n";
 
-//                                        echo 'Box: '.implode("|",$thisBox)."\n";
-//                                        echo 'Row: '.implode("|",$rows[$i])."\n";
-//                                        echo 'Column: '.implode("|",$columns[$j])."\n";
+                                    $thisBox = $boxes[$boxnumber];
+                                    $otherNumbers[] = $thisBox;
+
+                                        echo 'Box: '.implode("|",$thisBox)."\n";
+                                        echo 'Row: '.implode("|",$rows[$i])."\n";
+                                        echo 'Column: '.implode("|",$columns[$j])."\n";
 //
 //                                        $newOne = array_merge($thisBox, $rows[$i], $columns[$j]);
 //
@@ -229,16 +229,29 @@ class SudokuSolver
 
 
 
-
-                        if ($count == 1000) {
+                        if ($count == 300) {
                             $rows = $coordinates;
                             $flatRows = SudokuSolver::array_flatten($rows);
                             $implode =  implode("|",$flatRows);
                             echo " BIG AWESOME FLAT ROWS: "."\n". $implode."\n";
                             $zeros = substr_count($implode,"0");
                             echo " Zeros left: ". $zeros."\n";
+
                             return [];
+
                         }
+
+                        $rows = $coordinates;
+                        $flatRows = SudokuSolver::array_flatten($rows);
+                        $implode =  implode("|",$flatRows);
+                        $zeros = substr_count($implode,"0");
+                        echo " Zeros left: ". $zeros."\n";
+
+                        if ($zeros == 0) {
+                           return ($coordinates);
+
+                        }
+
 
 
                     }
@@ -249,14 +262,13 @@ class SudokuSolver
             }
             //var_dump(implode("|",$coordinates));
 
+            //var_dump($coordinates);
 
 
         }
 
 
 
-        var_dump($coordinates);
-        return $coordinates;
 
     }
 
