@@ -6,7 +6,7 @@ class SudokuSolver
 
 {
 
-    function array_flatten($array = null) {
+    public function array_flatten($array = null) {
         $result = array();
 
         if (!is_array($array)) {
@@ -24,102 +24,190 @@ class SudokuSolver
         return $result;
     }
 
-    public function sudokuSolver(array $coordinates)
-    {
+    public function getCluesForBox($rows, $columns, $boxes, $y, $x) {
+        $otherNumbers[] = $rows[$y];
+        $otherNumbers[] = $columns[$x];
+        if ($x < 3) {               //1st column
+            if ($y < 3) {
+                $boxnumber = 0;
+            }
+            elseif ($y > 5) {
+                $boxnumber = 6;
+            }
+            else {
+                $boxnumber = 3;
+            }
+        } elseif ($x > 5) {           //3rd column
+            if ($y < 3) {
+                $boxnumber = 2;
+            }
+            elseif ($y > 5) {
+                $boxnumber = 8;
+            }
+            else {
+                $boxnumber = 5;
+            }
+        } else {                       //2nd column
+            if ($y < 3) {
+                $boxnumber = 1;
+            } elseif ($y > 5) {
+                $boxnumber = 8;
+            } else {
+                $boxnumber = 4;
+            }
+        }
 
-        $size = 9;
-        $numbersUsed = range(1, 9);
+
+        //echo "\n"."\n"."\n".'Big box number: '. $boxnumber."\n";
+
+        $thisBox = $boxes[$boxnumber];
+
+        //echo "\n".'CluesRow : '.implode("|",$rows[$y])."\n";
+        //echo "\n".'CluesColumn: '.implode("|",$columns[$x])."\n";
+        //echo "\n".'CluesBox: '.implode("|",$boxes[$boxnumber])."\n";
+
+
+
+        $newOne = array_merge($thisBox, $rows[$y], $columns[$x]);
+        $flatUnique = array_unique($newOne);
+
+        while (($key = array_search(0, $flatUnique)) !== false) {
+            unset($flatUnique[$key]);
+        }
+
+        return $flatUnique;
+
+    }
+
+    public function setVariables($coordinates) {
 
         $rows = $coordinates;
 
-        for ($i = 0; $i < $size; $i++) {
+        for ($i = 0; $i < 9; $i++) {
             $col = [];
-            for ($j = 0; $j < $size; $j++) {
+            for ($j = 0; $j < 9; $j++) {
                 $col[] = $coordinates[$j][$i];
             }
             $columns[] = $col;
         }
 
-        $squareSize = sqrt($size);
-        for ($i = 0; $i < $size; $i += $squareSize) {
-            for ($j = 0; $j < $size; $j += $squareSize) {
+        for ($i = 0; $i < 9; $i += 3) {
+            for ($j = 0; $j < 9; $j += 3) {
                 $square = [];
-                for ($k = $i; $k < $i + $squareSize; $k++) {
-                    for ($l = $j; $l < $j + $squareSize; $l++) {
+                for ($k = $i; $k < $i + 3; $k++) {
+                    for ($l = $j; $l < $j + 3; $l++) {
                         $square[] = $coordinates[$k][$l];
                     }
                 }
                 $boxes[] = $square;
             }
         }
+        return [$rows, $columns, $boxes];
+    }
+
+    public function sudokuSolver(array $coordinates)
+    {
+
+
+        $numbersUsed = range(1, 9);
+
+        $variables = SudokuSolver::setVariables($coordinates);
+
+        $rows = $variables[0];
+        $columns = $variables[1];
+        $boxes = $variables[2];
+
 
         // Now we have lines, columns and boxes
 
+        $count = 0;
 
-        while (in_array(0, SudokuSolver::array_flatten($rows))) {
+        $flatRows = SudokuSolver::array_flatten($rows);
+
+
+        while (in_array(0, $flatRows)) {
+            //echo "\n".'FLAT ROWS: '.implode("|",$flatRows)."\n";
             for ($i = 0; $i < 9; $i++) {
                 for ($j = 0; $j < 9; $j++) {
                     if ($coordinates[$i][$j] == 0) {
-                        $otherNumbers[] = $rows[$i];
-                        $otherNumbers[] = $columns[$j]; //todo check that it works
-                        if ($j < 3) {
-                            if ($i < 3) {
-                                $boxnumber = 0;
-                            }
-                        } elseif ($j > 5) {
-                            if ($i < 3) {
-                                $boxnumber = 2;
-                            }
-                        } elseif  ($i < 3) {
-                            $boxnumber = 1;
-                        } elseif ($i > 5) {
-                            if ($j < 3) {
-                                $boxnumber = 6;
-                            }
-                        } elseif  ($i > 5) {
-                            if ($j > 5) {
-                                $boxnumber = 8;
-                            }
-                        } elseif  ($i > 5) {
-                                $boxnumber = 7;
-                        } elseif ($j < 3) {
-                                $boxnumber = 3;
-                        } elseif  ($j > 5) {
-                                $boxnumber = 5;
-                        } else {
-                            $boxnumber = 4;
-                        }
+                        $count++;
+
+                        $flatUnique = SudokuSolver::getCluesForBox($rows, $columns, $boxes, $i, $j);
+
+//                                    $otherNumbers[] = $rows[$i];
+//                                    $otherNumbers[] = $columns[$j];
+//                                    if ($j < 3) {               //1st column
+//                                        if ($i < 3) {
+//                                            $boxnumber = 0;
+//                                        }
+//                                        elseif ($i > 5) {
+//                                            $boxnumber = 6;
+//                                        }
+//                                        else {
+//                                            $boxnumber = 3;
+//                                        }
+//                                    } elseif ($j > 5) {           //3rd column
+//                                        if ($i < 3) {
+//                                            $boxnumber = 2;
+//                                        }
+//                                        elseif ($i > 5) {
+//                                            $boxnumber = 8;
+//                                        }
+//                                        else {
+//                                            $boxnumber = 5;
+//                                        }
+//                                    } else {                       //2nd column
+//                                        if ($i < 3) {
+//                                            $boxnumber = 1;
+//                                        } elseif ($i > 7) {
+//                                            $boxnumber = 8;
+//                                        } else {
+//                                            $boxnumber = 4;
+//                                        }
+//                                    }
+//
+//
+//
+//                                    echo "\n"."\n"."\n".'Big box number: '. $boxnumber."\n";
+//
+//                                    $thisBox = $boxes[$boxnumber];
+//                                    $otherNumbers[] = $thisBox;
+
+//                                        echo 'Box: '.implode("|",$thisBox)."\n";
+//                                        echo 'Row: '.implode("|",$rows[$i])."\n";
+//                                        echo 'Column: '.implode("|",$columns[$j])."\n";
+//
+//                                        $newOne = array_merge($thisBox, $rows[$i], $columns[$j]);
+//
+//                                        echo 'NewOne: '.implode("|",$newOne)."\n";
+//
+//                                        $flat = SudokuSolver::array_flatten($otherNumbers);
+//
+//                                        //$flatUnique = array_unique($flat);
+//                                        $flatUnique = array_unique($newOne);
+//
+//
+//                                        echo 'Flat unique: '.implode("|",$flatUnique)."\n";
+//
+//                                        while (($key = array_search(0, $flatUnique)) !== false) {
+//                                            unset($flatUnique[$key]);
+//                                        }
 
 
-                        echo "\n"."\n"."\n".'Big box number: '. $boxnumber."\n";
+                        //var_dump(implode("|",$flatUnique));
 
-                        $otherNumbers[] = $boxes[$boxnumber];
-
-
-
-                        $flat = SudokuSolver::array_flatten($otherNumbers);
-
-                        $flatUnique = array_unique($flat);
-
-
-
-                        if (($key = array_search(0, $flatUnique)) !== false) {
-                            unset($flatUnique[$key]);
-                        }
-
-                        echo ' Box: '.$i.' down and '.$j.' across';
-                        var_dump(implode("|",$flatUnique));
 
                         $diff = array_diff($numbersUsed, $flatUnique);
 
-                        var_dump($diff);
-
-                        $arr = array_values($diff);
 
 
-                        if (count($arr) == 1 ) {
 
+                        if (count($diff) == 1 ) {
 
+                            echo ' Box: '.$i.' down and '.$j.' across';
+                            echo "\n".'COUNT: '.$count."\n";
+
+                            $arr = array_values($diff);
                             $newValue = $arr[0];
 
                             echo ' new value: '.$newValue;
@@ -129,31 +217,41 @@ class SudokuSolver
                             $coordinates[$i][$j] = $newValue;
 
                             echo " New line: "."\n". implode("|",$coordinates[$i])."\n";
-                            echo " In my box: ";
+                            echo "\n"."\n";
 
+                            $variables = SudokuSolver::setVariables($coordinates);
+
+                            $rows = $variables[0];
+                            $columns = $variables[1];
+                            $boxes = $variables[2];
 
                         }
 
 
 
 
-
-
-
+                        if ($count == 1000) {
+                            $rows = $coordinates;
+                            $flatRows = SudokuSolver::array_flatten($rows);
+                            $implode =  implode("|",$flatRows);
+                            echo " BIG AWESOME FLAT ROWS: "."\n". $implode."\n";
+                            $zeros = substr_count($implode,"0");
+                            echo " Zeros left: ". $zeros."\n";
+                            return [];
+                        }
 
 
                     }
 
                 }
-                var_dump(implode("|",$coordinates));
-                return [];
 
 
             }
+            //var_dump(implode("|",$coordinates));
+
 
 
         }
-
 
 
 
