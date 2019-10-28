@@ -41,3 +41,5 @@ deploy.php
 ###< squizlabs/php_codesniffer ###
 
 app.yaml
+src/dojo.php
+

@@ -6,7 +6,6 @@ class SudokuChecker
 
 {
 
-
     public function sudokuChecker(array $coordinates)
     {
 
@@ -43,12 +42,10 @@ class SudokuChecker
         }
 
 
-
         //check boxes
         if (sqrt($size) == floor(sqrt($size))) {   //make sure it's divisible in
 
-            echo "SQUARE TEST";
-
+            //echo "SQUARE TEST";
 
             $boxSize = sqrt($size);
 
@@ -67,8 +64,6 @@ class SudokuChecker
 
                             $box[] = $coordinates[$k][$l];
 
-
-
                         }
                     }
                     $uniqueBox = array_unique($box);
@@ -76,13 +71,9 @@ class SudokuChecker
                         return false;
                     }
 
-
                 }
-
-
             }
         }
-
 
 
     return true;
